@@ -1,5 +1,6 @@
-EXTRAMALS=alias-hacks.mal pprint.mal
-INLINES=$(foreach f,$(EXTRAMALS),mal/lib/$(f) )
+EXTRAMALS=alias-hacks.mal trivial.mal
+LOCALMALS=math.clj
+INLINES=$(foreach f,$(EXTRAMALS),mal/lib/$(f) ) $(foreach f,$(LOCALMALS),src/$(f) )
 DEST?=flk
 
 $(DEST): mal/bash/mal src/*.sh $(INLINES) Makefile
@@ -14,6 +15,10 @@ $(DEST): mal/bash/mal src/*.sh $(INLINES) Makefile
 
 mal/bash/mal:
 	cd mal/bash && make mal
+
+test: flk
+	./mal/runtest.py tests/str.mal ./flk
+	./mal/runtest.py tests/math.mal ./flk
 
 .PHONY: clean
 

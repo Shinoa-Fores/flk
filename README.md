@@ -29,6 +29,8 @@ Now you can use a humble LISP to do Bash things.
 Bash as a scripting language has many edges, but it is everywhere.
 Fleck attempts to round off the edges.
 
+Fleck runs on Bash 4 and higher.
+
 # How?
 
 Almost all of this code is from the [make-a-LISP](https://github.com/kanaka/mal/) project. All I've done is put together a simple Makefile to package it up into an easily deployable single-file bash script.
@@ -41,36 +43,43 @@ A list of macros and functions that are present in Fleck.
 
 This is the set of built-ins from the make-a-lisp project.
 These more or less work but are generally more limited in functionality than their Clojure equivalents.
-For example the addition function `(+)` can only add two numbers at a time.
+For example the addition function `(+)` can only add two integers at a time.
 
 `def!` | `defmacro!` | `if` | `do` | `fn*` | `try*` | `sh*` | `let*` | `quote` | `quasiquote` | `macroexpand` | `type` | `=` | `throw` | `nil?` | `true?` | `false?` | `string?` | `symbol` | `symbol?` | `keyword` | `keyword?` | `number?` | `fn?` | `macro?` | `pr-str` | `str` | `prn` | `println` | `readline` | `read-string` | `slurp` | `<` | `<=` | `>` | `>=` | `+` | `-` | `*` | `/` | `time-ms` | `list` | `list?` | `vector` | `vector?` | `hash-map` | `map?` | `assoc` | `dissoc` | `get` | `contains?` | `keys` | `vals` | `sequential?` | `cons` | `concat` | `nth` | `first` | `rest` | `empty?` | `count` | `apply` | `map` | `conj` | `seq` | `with-meta` | `meta` | `atom` | `atom?` | `deref` | `reset!` | `swap!`
 
-## Extras
-
-These functions are defined in Fleck itself or pulled in from the `mal/lib/` folder.
-
-`pprint` | `str-replace` | `str-split`
-
- * `(str-replace STRING FIND REPLACE)` - Replace all occurrences of the string `FIND` in `STRING` with the string `REPLACE`.
- * `(str-split STRING SPLIT-CHARACTER)` - Split `STRING` into a list of strings on the single characters `SPLIT-CHARACTER`.
-
 ## Aliases
 
-These are wrappers around the limited internal versions of the make-a-lisp macros and functions and are much more limited than the Clojure equivalents.
+These are wrappers around the limited make-a-lisp versions and are much more limited than the Clojure equivalents.
 
 `let` | `when` | `def` | `fn` | `defn`
 
+## Mal extras
+
+These functions are pulled from a selection of `mal/lib/*.mal`.
+
+`partial` | `inc` | `dec` | `zero` | `identity`
+
+## Fleck extras
+
+These functions are hand crafted Fleck specials design to make common shell scripting tasks easier.
+
+ * `(str-replace STRING FIND REPLACE)` - Replace all occurrences of the string `FIND` in `STRING` with the string `REPLACE`.
+ * `(str-split STRING SPLIT-CHARACTER)` - Split `STRING` into a list of strings on the single characters `SPLIT-CHARACTER`.
+ * `(dc OPERATOR ARRAY-OF-NUMBERS)` - Wraps the `dc` command to do decimal math. E.g. `(dc '+ [1 2 3])` yeilds `6`.
+
 # Compile
 
-You can compile your Fleck script to a one which runs in pure Bash without Fleck.
-This works by bundling the Fleck sources with your script.
-Say you have a Fleck script called `wow.clj`, you can compile it as follows.
+You can make a pure bash script from your Fleck script by bundling your script and Fleck together into a new script.
+
+Say you have a Fleck script called `wow.clj`, you can bundle it as follows:
 
 ```
 make DEST=wow INSERT=./wow.clj NOREPL=1
 ```
 
-This will produce a new standalone executable script called `wow` which will bundle `wow.clj` into Fleck and it will be called at run time.
+This will produce a new standalone script called `wow` with Fleck + `wow.clj` bundled together.
+
+When you run `wow` the embedded `wow.clj` will be run by the embedded Fleck.
 
 # FAQ
 
@@ -80,17 +89,19 @@ Think of this as homoiconic Bash rather than Clojure, and code as if you're in B
 
 No, it's bash.
 
+Some subset of Clojure-like code will run. See the documentation and examples.
+
 ### Why can't I add more than 2 numbers together?
 
-It's bash. Try invoking bc: `(sh* "bc <<< '1 + 2 + 3 + 4'")`
+It's bash. Try the `dc` function: `(dc '+ [1 2 3 4])`
 
 ### Where are the floating point numbers?
 
-It's bash. Try invoking bc: `(sh* "bc <<< '3 + 0.1415926'")`
+It's bash. Try the `dc` function for decimals: `(dc '* [8.2 3.5])`
 
 ### Why can't I iterate on a string?
 
-It's bash. Try `(seq "somestring")`.
+Try `(seq "somestring")`.
 
 ### How do I do destructuring?
 
@@ -98,7 +109,7 @@ You can't.
 
 ### Why is it called Fleck?
 
-At 36k and running on any machine with Bash, the name seemed appropriate.
+At `36k` and running on any machine with Bash 4, the name seemed appropriate.
 
 ```
  fleck
