@@ -1517,7 +1517,9 @@ fi
 
 # repl loop
 REP "(println (str \"Fleck\"))"
+RED=$'\001\e[00;31m\002'
+NOC=$'\001\e[0m\002'
 while true; do
-    READLINE "user> " || exit "$?"
+    READLINE "[${RED}user${NOC}]> " || exit "$?"
     [[ "${r}" ]] && REP "${r}" && echo "${r}"
 done
