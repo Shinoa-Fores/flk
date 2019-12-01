@@ -3,8 +3,14 @@
 trap "exit 1" TERM
 export TOP_PID=$$
 
+###COLORS####################
+RED=$'\001\e[00;31m\002'
+GREEN=$'\001\e[00;32m\002'
+BLUE=$'\001\e[00;34m\002'
+NOC=$'\001\e[0m\002'
+#############################
+
 # mal (Make a Lisp) object types
-#
 
 if [ -z "${__mal_types_included__}" ]; then
 __mal_types_included=true
@@ -1064,8 +1070,7 @@ swap_BANG () {
 
 # EXIT function
 
-quit ()
-{
+quit () {
    echo "Goodbye"
    kill -s TERM $TOP_PID
 }
@@ -1503,10 +1508,8 @@ fi
 
 
 # repl loop
-REP "(println (str \"Fleck\"))"
-RED=$'\001\e[00;31m\002'
-NOC=$'\001\e[0m\002'
+
 while true; do
-    READLINE "[${RED}user${NOC}]> " || exit "$?"
+    READLINE "[${RED}USER${NOC}]> " || exit "$?"
     [[ "${r}" ]] && REP "${r}" && echo "${r}"
 done
