@@ -1144,7 +1144,6 @@ declare -A core_ns=(
     [logxor]=logxor
     [lognor]=lognor
     
-
     [list]=_list
     [list?]=list?
     [vector]=_vector
@@ -1479,6 +1478,43 @@ _str_split() {
 }
 
 _fref "str-split" _str_split
+
+_env() {
+  local key
+  local val
+  [ "${1}" != "" ] && key="${ANON["${1}"]}"; shift
+  [ "${1}" != "" ] && val="${ANON["${1}"]}"; shift
+  [ "${val}" != "" ] && export "${key}=${val}"
+  local line
+  local ikey
+  local ival
+
+  _hash_map; local envmap="${r}"
+  while read -r -d '' line; do
+    IFS='=' read ikey ival <<< "${line}"
+    _string "${ival}"
+    _assoc! "${envmap}" "${ikey}" "${r}"
+  done < <(env -0)
+
+  if [ "${key}" != "" ]
+  then
+    _get "${envmap}" "${key}"
+    [[ "${r}" ]] || r="${__nil}"
+  else
+    r="${envmap}"
+  fi
+}
+
+_fref "env" _env
+
+_remove_hashbang() {
+  src="${ANON["${1}"]}"
+  _string "${src/*smol$'\n'/}"
+}
+
+_fref "remove-hashbang" _remove_hashbang
+
+REP "(def! load-file-without-hashbang (fn* (f) (eval (read-string (str \"(do \" (remove-hashbang (slurp f) ) \"\nnil)\")))))"
 read -d "" _REPCAPTURE <<INLINEMALFILE
 ;; aliases for common clojure names to mal builtins
 ;; NOTE: this is a hack
@@ -1535,11 +1571,15 @@ read -d "" _REPCAPTURE <<INLINEMALFILE
 INLINEMALFILE
 REP "(do ${_REPCAPTURE})";
 
-# load/run file from command line (then exit)
-if [[ "${1}" ]]; then
-    REP "(load-file \"${1}\")"
-    [ "${r}" = "nil" ] && exit 0 || { echo "${r}"; exit 127; };
-fi
+( return 0 2>/dev/null ) && _fleck_sourced=1 || _fleck_sourced=0
+
+if [ "${_fleck_sourced}" = "0" ]
+then
+  # load/run file from command line (then exit)
+  if [[ "${1}" ]]; then
+      REP "(load-file-without-hashbang \"${1}\")"
+      [ "${r}" = "nil" ] && exit 0 || { echo "${r}"; exit 127; };
+  fi
 
 # repl loop
 
@@ -1548,3 +1588,5 @@ while true; do
     READLINE "[${RED}USER${NOC}]> " || exit "$?"
     [[ "${r}" ]] && REP "${r}" && echo "${r}"
 done 
+fi
+

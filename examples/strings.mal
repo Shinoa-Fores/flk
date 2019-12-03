@@ -1,3 +1,4 @@
+#!/usr/bin/env smol
 (println "split:" (pr-str (str-split "these:are:some:words:yay" ":")))
 
 (println "replace:" (pr-str (str-replace "hello goodbye fufwf yes" "bye" "[day]")))

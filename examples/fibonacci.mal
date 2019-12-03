@@ -1,3 +1,4 @@
+#!/usr/bin/env smol
 ; from gherkin: https://github.com/alandipert/gherkin/blob/master/fib.gk
       
 (defn fib* (a b n)

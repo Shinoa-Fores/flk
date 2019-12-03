@@ -1,3 +1,4 @@
+#!/usr/bin/env smol
 
 (if (= (count *ARGV*) 0)
   (println "No arguments supplied.")

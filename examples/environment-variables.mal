@@ -1,4 +1,4 @@
-#!/usr/bin/env flk
+#!/usr/bin/env smol
 
 ; access a hash-map of all environment variables
 ; like {"SHELL" "/bin/bash"}

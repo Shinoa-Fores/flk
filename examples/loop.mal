@@ -1,3 +1,4 @@
+#!/usr/bin/env smol
 ;; loop through a vector
 (map
   (fn [x]

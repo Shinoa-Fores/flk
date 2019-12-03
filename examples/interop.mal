@@ -1,3 +1,4 @@
+#!/usr/bin/env smol
 ;; Testing basic bash interop
 ;; from mal/bash/tests/stepA_mal.mal
 
