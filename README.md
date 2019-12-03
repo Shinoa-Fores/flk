@@ -1,15 +1,14 @@
 <p align="center">
-  <img src="docs/wordmark.svg?sanitize=true" alt="Fleck wordmark"><br/>
-  Fleck is a Clojure-like LISP that runs wherever Bash is.
+  SMOL is a LISP that runs wherever Bash is.
 </p>
 
-<p align="center"><img src="docs/screencast.svg?sanitize=true" alt="Fleck screencast"></p>
+
 
 # Get it
 
 ```shell
-curl -s https://chr15m.github.io/flk/flk > flk && chmod 755 flk
-./flk
+curl -O https://raw.githubusercontent.com/Shinoa-Fores/smol/master/bin/smol && chmod 755 smol
+./smol
 ```
 
 ### [Examples](./examples) | [Reference](#reference) | [FAQ](#faq) | [make-a-lisp](https://github.com/kanaka/mal)
@@ -17,27 +16,27 @@ curl -s https://chr15m.github.io/flk/flk > flk && chmod 755 flk
 # What?
 
 ```
-$ echo '(println "Hello world!") (println "Hostname:" (sh* "hostname")))' > example.clj
-$ ./flk example.clj
+$ echo '(println "Hello world!") (println "Hostname:" (sh* "hostname")))' > example.mal
+$ ./smol example.mal
 Hello world!
-Hostname: diziet
+Hostname: niftyhost
 ```
 
 # Why?
 
 Now you can use a humble LISP to do Bash things.
 Bash as a scripting language has many edges, but it is everywhere.
-Fleck attempts to round off the edges.
+SMOL attempts to round off the edges.
 
-Fleck runs on Bash 4 and higher.
+SMOL runs on Bash 4 and higher.
 
 # How?
 
-Almost all of this code is from the [make-a-LISP](https://github.com/kanaka/mal/) project. All I've done is put together a simple Makefile to package it up into an easily deployable single-file bash script.
+Almost all of this code is from the [make-a-LISP](https://github.com/kanaka/mal/) project, and is a fork of [flk](https://github.com/chr15m/flk) with some fixes that might not apply to the normal mal coding conventions.
 
 # Reference
 
-A list of variables, macros and functions that are present in Fleck.
+A list of variables, macros and functions that are present in smol.
 
 ## Built-ins
 
@@ -63,7 +62,7 @@ These functions are pulled from a selection of `mal/lib/*.mal`.
 
 ## Fleck extras
 
-These functions are hand crafted Fleck specials designed to make common shell scripting tasks easier.
+These functions are hand crafted specials designed to make common shell scripting tasks easier.
 
  * `(str-replace STRING FIND REPLACE)` - Replace all occurrences of the string `FIND` in `STRING` with the string `REPLACE`.
  * `(str-split STRING SPLIT-CHARACTER)` - Split `STRING` into a list of strings on the single characters `SPLIT-CHARACTER`.
@@ -75,24 +74,10 @@ These functions are hand crafted Fleck specials designed to make common shell sc
  * `(sh* COMMAND)` - Run arbitrary bash strings and return the stdout result.
  * `(env [KEY] [VALUE])` - See above section.
 
-For examples of writing your own Fleck functions in Bash see [src/extras.sh](./src/extras.sh).
-Functions should set the special return value `r` and use Fleck type casting functions like `_string` to wrap the result in a reference.
-Internal Fleck functions such as `_string` automatically do this and can be used bare.
-Use `_fref` to make your function available to the Fleck namespace e.g. `_fref "my-bash-function" _my_bash_function`.
-
-# Compile
-
-You can make a pure bash script from your Fleck script by bundling your script and Fleck together into a new script.
-
-Say you have a Fleck script called `wow.clj`, you can bundle it as follows:
-
-```
-make DEST=wow INSERT=./wow.clj NOREPL=1
-```
-
-This will produce a new standalone script called `wow` with Fleck + `wow.clj` bundled together.
-
-When you run `wow` the embedded `wow.clj` will be run by the embedded Fleck.
+For examples of writing your own functions in Bash see [src/extras.sh](./src/extras.sh).
+Functions should set the special return value `r` and use smol type casting functions like `_string` to wrap the result in a reference.
+Internal smol functions such as `_string` automatically do this and can be used bare.
+Use `_fref` to make your function available to the smol namespace e.g. `_fref "my-bash-function" _my_bash_function`.
 
 # FAQ
 
@@ -110,15 +95,15 @@ Use the special global list `*ARGV*`.
 
 ### How do I access and modify environment variables?
 
-Check the [`(env)` function above](#fleck-extras). See also [examples/environment-variables.clj](./examples/environment-variables.clj).
+Check the [`(env)` function above](#smol-extras). See also [examples/environment-variables.mal](./examples/environment-variables.mal).
 
 ### How can I execute a one-liner of Fleck code?
 
 Either of these methods will work:
 
 ```shell
-flk <<< '(println "hi")'
-echo '(println "hi")' | flk
+smol <<< '(println "hi")'
+echo '(println "hi")' | smol
 ```
 
 ### Why can't I add more than 2 numbers together?
@@ -143,13 +128,3 @@ You can't.
 
 Seems unlikely. Better stick to strings.
 
-### Why is it called Fleck?
-
-At `36k` and running on any machine with Bash 4, the name seemed appropriate.
-
-```
- fleck
-
-    n. A tiny mark or spot.
-    n. A small bit or flake.
-```
