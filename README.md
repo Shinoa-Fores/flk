@@ -60,7 +60,7 @@ These functions are pulled from a selection of `mal/lib/*.mal`.
 
 `partial` | `inc` | `dec` | `zero` | `identity`
 
-## Fleck extras
+## Extras
 
 These functions are hand crafted specials designed to make common shell scripting tasks easier.
 
@@ -68,6 +68,7 @@ These functions are hand crafted specials designed to make common shell scriptin
  * `(str-split STRING SPLIT-CHARACTER)` - Split `STRING` into a list of strings on the single characters `SPLIT-CHARACTER`.
  * `(dc OPERATOR ARRAY-OF-NUMBERS)` - Wraps the `dc` command to do decimal math. E.g. `(dc '+ [1 2 3])` yeilds `6`.
  * `(env [KEY] [VALUE])` - Returns a `hash-map` of environment variables. Returns the value of `KEY` if present. Sets the value of `KEY` to `VAL` if the latter is present.
+ * `lsh` | `rsh` | `logand` | `logior` | `logxor` | `lognor` - Perform various bitwise operations.
 
 ## Interop
 
@@ -97,7 +98,7 @@ Use the special global list `*ARGV*`.
 
 Check the [`(env)` function above](#smol-extras). See also [examples/environment-variables.mal](./examples/environment-variables.mal).
 
-### How can I execute a one-liner of Fleck code?
+### How can I execute a one-liner of smol code?
 
 Either of these methods will work:
 
