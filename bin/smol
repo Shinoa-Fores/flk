@@ -794,29 +794,24 @@ time_ms () {
 
 # Left shift
 lsh () {
-echo $(( ${ANON["${1}"]} << ${ANON["${2}"]} ))
+r=$(( ${ANON["${1}"]} << ${ANON["${2}"]} )); _number "${r}";
 }
 # Right shift
 rsh () {
-echo $(( ${ANON["${1}"]} >> ${ANON["${2}"]} ))
+r=$(( ${ANON["${1}"]} >> ${ANON["${2}"]} )); _number "${r}";
 }
 # AND
 logand () {
-echo $(( ${ANON["${1}"]} & ${ANON["${2}"]} ))
+r=$(( ${ANON["${1}"]} & ${ANON["${2}"]} )); _number "${r}";
 }
 # OR
 logior () {
-echo $(( ${ANON["${1}"]} | ${ANON["${2}"]} ))
+r=$(( ${ANON["${1}"]} | ${ANON["${2}"]} )); _number "${r}";
 }
 # XOR
 logxor () {
-echo $(( ${ANON["${1}"]} ^ ${ANON["${2}"]} ))
+r=$(( ${ANON["${1}"]} ^ ${ANON["${2}"]} )); _number "${r}";
 }
-# NOT
-lognor () {
-echo $(( ~ ${ANON["${1}"]} ))
-}
-
 
 # String functions
 
@@ -1142,7 +1137,6 @@ declare -A core_ns=(
     [logand]=logand
     [logior]=logior
     [logxor]=logxor
-    [lognor]=lognor
     
     [list]=_list
     [list?]=list?

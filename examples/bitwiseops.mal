@@ -1,0 +1,11 @@
+#!/usr/bin/env smol
+(def a 88)
+(def b 13)
+(println "a =" (pr-str a))
+(println "b =" (pr-str b))
+(println "Left shift of a and b is:" (lsh a b))
+(println "Right shift of a and b is:" (rsh a b))
+(println "BITWISE AND of a and b is:" (logand a b))
+(println "BITWISE INCLUSIVE OR of a and b is:" (logior a b))
+(println "BITWISE EXCLUSIVE OR of a and b is:" (logxor a b))
+
