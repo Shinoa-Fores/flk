@@ -790,6 +790,33 @@ time_ms () {
     _number "${ms}"
 }
 
+# Bitwise operations
+
+# Left shift
+lsh () {
+echo $(( ${ANON["${1}"]} << ${ANON["${2}"]} ))
+}
+# Right shift
+rsh () {
+echo $(( ${ANON["${1}"]} >> ${ANON["${2}"]} ))
+}
+# AND
+logand () {
+echo $(( ${ANON["${1}"]} & ${ANON["${2}"]} ))
+}
+# OR
+logior () {
+echo $(( ${ANON["${1}"]} | ${ANON["${2}"]} ))
+}
+# XOR
+logxor () {
+echo $(( ${ANON["${1}"]} ^ ${ANON["${2}"]} ))
+}
+# NOT
+lognor () {
+echo $(( ~ ${ANON["${1}"]} ))
+}
+
 
 # String functions
 
@@ -1109,6 +1136,14 @@ declare -A core_ns=(
     [__STAR__]=num_multiply
     [/]=num_divide
     [time-ms]=time_ms
+
+    [lsh]=lsh
+    [rsh]=rsh
+    [logand]=logand
+    [logior]=logior
+    [logxor]=logxor
+    [lognor]=lognor
+    
 
     [list]=_list
     [list?]=list?
