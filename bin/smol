@@ -557,7 +557,7 @@ _pr_str () {
     fi
 }
 
-nil_pr_str () { r="nil"; }
+nil_pr_str () { r="${GREEN}NIL${NOC}"; }
 true_pr_str () { r="true"; }
 false_pr_str () { r="false"; }
 
