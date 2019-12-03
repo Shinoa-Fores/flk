@@ -37,7 +37,7 @@ Almost all of this code is from the [make-a-LISP](https://github.com/kanaka/mal/
 
 # Reference
 
-A list of macros and functions that are present in Fleck.
+A list of variables, macros and functions that are present in Fleck.
 
 ## Built-ins
 
@@ -46,6 +46,8 @@ These more or less work but are generally more limited in functionality than the
 For example the addition function `(+)` can only add two integers at a time.
 
 `def!` | `defmacro!` | `if` | `do` | `fn*` | `try*` | `sh*` | `let*` | `quote` | `quasiquote` | `macroexpand` | `type` | `=` | `throw` | `nil?` | `true?` | `false?` | `string?` | `symbol` | `symbol?` | `keyword` | `keyword?` | `number?` | `fn?` | `macro?` | `pr-str` | `str` | `prn` | `println` | `readline` | `read-string` | `slurp` | `<` | `<=` | `>` | `>=` | `+` | `-` | `*` | `/` | `time-ms` | `list` | `list?` | `vector` | `vector?` | `hash-map` | `map?` | `assoc` | `dissoc` | `get` | `contains?` | `keys` | `vals` | `sequential?` | `cons` | `concat` | `nth` | `first` | `rest` | `empty?` | `count` | `apply` | `map` | `conj` | `seq` | `with-meta` | `meta` | `atom` | `atom?` | `deref` | `reset!` | `swap!`
+
+ * `*ARGV*` - list of arguments passed on the command line.
 
 ## Aliases
 
@@ -61,11 +63,22 @@ These functions are pulled from a selection of `mal/lib/*.mal`.
 
 ## Fleck extras
 
-These functions are hand crafted Fleck specials design to make common shell scripting tasks easier.
+These functions are hand crafted Fleck specials designed to make common shell scripting tasks easier.
 
  * `(str-replace STRING FIND REPLACE)` - Replace all occurrences of the string `FIND` in `STRING` with the string `REPLACE`.
  * `(str-split STRING SPLIT-CHARACTER)` - Split `STRING` into a list of strings on the single characters `SPLIT-CHARACTER`.
  * `(dc OPERATOR ARRAY-OF-NUMBERS)` - Wraps the `dc` command to do decimal math. E.g. `(dc '+ [1 2 3])` yeilds `6`.
+ * `(env [KEY] [VALUE])` - Returns a `hash-map` of environment variables. Returns the value of `KEY` if present. Sets the value of `KEY` to `VAL` if the latter is present.
+
+## Interop
+
+ * `(sh* COMMAND)` - Run arbitrary bash strings and return the stdout result.
+ * `(env [KEY] [VALUE])` - See above section.
+
+For examples of writing your own Fleck functions in Bash see [src/extras.sh](./src/extras.sh).
+Functions should set the special return value `r` and use Fleck type casting functions like `_string` to wrap the result in a reference.
+Internal Fleck functions such as `_string` automatically do this and can be used bare.
+Use `_fref` to make your function available to the Fleck namespace e.g. `_fref "my-bash-function" _my_bash_function`.
 
 # Compile
 
@@ -89,7 +102,24 @@ Think of this as homoiconic Bash rather than Clojure, and code as if you're in B
 
 No, it's bash.
 
-Some subset of Clojure-like code will run. See the documentation and examples.
+Some subset of Clojure-like code will run. See the [documentation](#reference) and [examples](./examples).
+
+### How do I access command line arguments?
+
+Use the special global list `*ARGV*`.
+
+### How do I access and modify environment variables?
+
+Check the [`(env)` function above](#fleck-extras). See also [examples/environment-variables.clj](./examples/environment-variables.clj).
+
+### How can I execute a one-liner of Fleck code?
+
+Either of these methods will work:
+
+```shell
+flk <<< '(println "hi")'
+echo '(println "hi")' | flk
+```
 
 ### Why can't I add more than 2 numbers together?
 
@@ -99,6 +129,8 @@ It's bash. Try the `dc` function: `(dc '+ [1 2 3 4])`
 
 It's bash. Try the `dc` function for decimals: `(dc '* [8.2 3.5])`
 
+Note that dc's divide seems to only output integers. ¯\\_(ツ)_/¯
+
 ### Why can't I iterate on a string?
 
 Try `(seq "somestring")`.
@@ -106,6 +138,10 @@ Try `(seq "somestring")`.
 ### How do I do destructuring?
 
 You can't.
+
+### Can I use anything as a `hash-map` key?
+
+Seems unlikely. Better stick to strings.
 
 ### Why is it called Fleck?
 
