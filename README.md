@@ -2,7 +2,7 @@
   SMOL is a LISP that runs wherever Bash is.
 </p>
 
-
+<p align="center"><img src="docs/smol.png alt="smol"></p>
 
 # Get it
 
