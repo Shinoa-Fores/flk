@@ -177,7 +177,7 @@ _number? () { [[ ${1} =~ ^numb_ ]]; }
 _string () {
     __new_obj_hash_code
     r="strn_${r}"
-    ANON["${r}"]="${1}"
+    ANON["${r}"]="${1//\*/__STAR__}"
 }
 _string? () { [[ ${1} =~ ^strn_ ]]; }
 
@@ -813,6 +813,7 @@ logxor () {
 r=$(( ${ANON["${1}"]} ^ ${ANON["${2}"]} )); _number "${r}";
 }
 
+
 # String functions
 
 string? () { _string? "${1}" && ( ! _keyword? "${1}" ) && r="${__true}" || r="${__false}"; }
@@ -1137,7 +1138,7 @@ declare -A core_ns=(
     [logand]=logand
     [logior]=logior
     [logxor]=logxor
-    
+
     [list]=_list
     [list?]=list?
     [vector]=_vector
@@ -1339,9 +1340,11 @@ EVAL () {
         sh__STAR__)  EVAL "${a1}" "${env}"
               local output=""
               local line=""
+              r="${ANON["${r}"]}"
+              r="${r//__STAR__/*}"
               while read -r line || [ -n "${line}" ]; do
                 output="${output}${line}"$'\n'
-              done < <(eval "${ANON["${r}"]}")
+              done < <(eval "${r}")
               _string "${output%$'\n'}"
               return ;;
         try__STAR__) EVAL "${a1}" "${env}"
@@ -1463,10 +1466,10 @@ _str_split() {
   local newlist="${r}"
 
   while IFS="${ifs}" read -ra _str_split_arr; do
-        for _str_split_itm in "${_str_split_arr[@]}"; do
-          _string "${_str_split_itm}";
-          _conj! "${newlist}" "${r}";
-        done
+    for _str_split_itm in "${_str_split_arr[@]}"; do
+      _string "${_str_split_itm}";
+      _conj! "${newlist}" "${r}";
+    done
   done <<< "${var}"
   r="${newlist}"
 }
@@ -1503,13 +1506,13 @@ _fref "env" _env
 
 _remove_hashbang() {
   src="${ANON["${1}"]}"
-  _string "${src/*smol$'\n'/}"
+  _string "${src/*flk$'\n'/}"
 }
 
 _fref "remove-hashbang" _remove_hashbang
 
 REP "(def! load-file-without-hashbang (fn* (f) (eval (read-string (str \"(do \" (remove-hashbang (slurp f) ) \"\nnil)\")))))"
-read -d "" _REPCAPTURE <<INLINEMALFILE
+read -d "" __FLECK__REPCAPTURE << __FLECK__INLINEMALFILE
 ;; aliases for common clojure names to mal builtins
 ;; NOTE: this is a hack
 
@@ -1562,9 +1565,14 @@ read -d "" _REPCAPTURE <<INLINEMALFILE
                      " p'")]
     (read-string
       (sh* calcstr))))
-INLINEMALFILE
-REP "(do ${_REPCAPTURE})";
+(def! foldr (fn* [f init xs]
+  (if (empty? xs) init (f (first xs) (foldr f init (rest xs))))))
 
+(def! reduce (fn* (f init xs)
+  (if (empty? xs) init (reduce f (f init (first xs)) (rest xs)))))
+
+__FLECK__INLINEMALFILE
+REP "(do ${__FLECK__REPCAPTURE})";
 ( return 0 2>/dev/null ) && _fleck_sourced=1 || _fleck_sourced=0
 
 if [ "${_fleck_sourced}" = "0" ]
@@ -1574,8 +1582,6 @@ then
       REP "(load-file-without-hashbang \"${1}\")"
       [ "${r}" = "nil" ] && exit 0 || { echo "${r}"; exit 127; };
   fi
-
-# repl loop
 
 [ -t 0 ] && REP "(println (str \"SMOL (Shell Micro Lisp) v1.0\"))"
 while true; do
