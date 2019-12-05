@@ -8,10 +8,9 @@ then
       [ "${r}" = "nil" ] && exit 0 || { echo "${r}"; exit 127; };
   fi
 
-  # repl loop
-  [ -t 0 ] && REP "(println (str \"Fleck\"))"
-  while true; do
-      READLINE "user> " || exit "$?"
-      [[ "${r}" ]] && REP "${r}" && ( [ -t 0 ] && echo "${r}" )
-  done
+[ -t 0 ] && REP "(println (str \"SMOL (Shell Micro Lisp) v1.0\"))"
+while true; do
+    READLINE "[${RED}USER${NOC}]> " || exit "$?"
+    [[ "${r}" ]] && REP "${r}" && echo "${r}"
+done 
 fi

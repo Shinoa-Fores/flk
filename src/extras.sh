@@ -54,7 +54,7 @@ _fref "env" _env
 
 _remove_hashbang() {
   src="${ANON["${1}"]}"
-  _string "${src/*flk$'\n'/}"
+  _string "${src/*smol$'\n'/}"
 }
 
 _fref "remove-hashbang" _remove_hashbang
